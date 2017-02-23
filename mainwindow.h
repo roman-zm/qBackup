@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QSettings>
 #include <QListWidgetItem>
+#include <quazip5/JlCompress.h>
 #include "settings.h"
 
 #define ORGANIZATION_NAME "romanzm"
@@ -26,6 +27,7 @@ private slots:
     void showTaskSettings(QListWidgetItem *item);
     void saveTasks();
     void readTasks();
+    void runBackup(QString taskName);
 
     void on_actionSettings_triggered();
 
@@ -34,6 +36,10 @@ private slots:
     void on_actionAdd_triggered();
 
     void on_actionDelete_triggered();
+
+    void on_runBackupButton_clicked();
+
+    void on_pushButton_clicked();
 
 private:
     Ui::MainWindow *ui;

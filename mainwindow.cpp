@@ -4,6 +4,8 @@
 
 #include <QListWidget>
 #include <QInputDialog>
+#include <quazip5/JlCompress.h>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -78,4 +80,26 @@ void MainWindow::on_actionDelete_triggered()
     qSett.remove(name);
     ui->backupsList->takeItem(ui->backupsList->currentRow());
     saveTasks();
+}
+
+void MainWindow::runBackup(QString taskName)
+{
+    bool a;
+    a = JlCompress::compressDir(qSett.value(QString("%1/BackupDirName").arg(taskName)).toString()+QDir::separator()+taskName+".zip",
+                                qSett.value(QString("%1/DirName").arg(taskName)).toString(),true,QDir::AllDirs);
+    if(!a) QMessageBox::critical(this,tr("Error"),tr("Backuping error"));
+    else QMessageBox::critical(this,tr("Succes"),tr("Backuping succes"));
+
+}
+
+void MainWindow::on_runBackupButton_clicked()
+{
+    runBackup(ui->backupsList->selectedItems().at(0)->text());
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    for(int i=0; i<ui->backupsList->count(); i++){
+        runBackup(ui->backupsList->item(i)->text());
+    }
 }
