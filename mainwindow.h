@@ -5,6 +5,9 @@
 #include <QSettings>
 #include <QListWidgetItem>
 #include <quazip5/JlCompress.h>
+#include <QSystemTrayIcon>
+#include <QMenu>
+#include <QTimer>
 #include "settings.h"
 
 #define ORGANIZATION_NAME "romanzm"
@@ -28,6 +31,9 @@ private slots:
     void saveTasks();
     void readTasks();
     void runBackup(QString taskName);
+    void timeoutBackupEvent();
+    void showOrHide();
+    void closeEvent(QCloseEvent *event);
 
     void on_actionSettings_triggered();
 
@@ -45,6 +51,11 @@ private:
     Ui::MainWindow *ui;
     QSettings qSett;
     Settings settingWindow;
+    QSystemTrayIcon *systemTray;
+    QMenu *trayMenu;
+    QAction *triggVisible;
+    QAction *exitApplication;
+    QTimer *timer;
 };
 
 #endif // MAINWINDOW_H

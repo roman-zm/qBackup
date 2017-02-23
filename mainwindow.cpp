@@ -6,6 +6,12 @@
 #include <QInputDialog>
 #include <quazip5/JlCompress.h>
 #include <QMessageBox>
+#include <QSystemTrayIcon>
+#include <QApplication>
+#include <QMenu>
+#include <QAction>
+#include <QCloseEvent>
+#include <QTimer>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -15,6 +21,22 @@ MainWindow::MainWindow(QWidget *parent) :
     readTasks();
     connect(ui->backupsList, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
             this, SLOT(showTaskSettings(QListWidgetItem*)));
+    trayMenu = new QMenu(this);
+    triggVisible = new QAction("Show/Hide", this);
+    exitApplication = new QAction("Exit", this);
+    connect(triggVisible, SIGNAL(triggered()), this, SLOT(showOrHide()));
+    connect(exitApplication, SIGNAL(triggered(bool)), qApp, SLOT(quit()));
+    trayMenu->addAction(triggVisible);
+    trayMenu->addAction(exitApplication);
+
+    systemTray = new QSystemTrayIcon(this);
+    systemTray->setIcon(QIcon(qApp->applicationDirPath()+QDir::separator()+"Backup.png"));
+    systemTray->setVisible(true);
+    systemTray->setContextMenu(trayMenu);
+
+    timer = new QTimer(this);
+    timer->start(50000);
+    connect(timer, SIGNAL(timeout()), this, SLOT(timeoutBackupEvent()));
 }
 
 MainWindow::~MainWindow()
@@ -29,7 +51,7 @@ void MainWindow::on_actionSettings_triggered()
 
 void MainWindow::on_actionExit_triggered()
 {
-    qApp->exit();
+    qApp->quit();
 }
 
 void MainWindow::on_actionAdd_triggered()
@@ -82,13 +104,23 @@ void MainWindow::on_actionDelete_triggered()
     saveTasks();
 }
 
+void MainWindow::showOrHide()
+{
+    this->setVisible(!this->isVisible());
+}
+
 void MainWindow::runBackup(QString taskName)
 {
     bool a;
     a = JlCompress::compressDir(qSett.value(QString("%1/BackupDirName").arg(taskName)).toString()+QDir::separator()+taskName+".zip",
                                 qSett.value(QString("%1/DirName").arg(taskName)).toString(),true,QDir::AllDirs);
-    if(!a) QMessageBox::critical(this,tr("Error"),tr("Backuping error"));
-    else QMessageBox::critical(this,tr("Succes"),tr("Backuping succes"));
+    if(this->isVisible()){
+        if(!a) QMessageBox::critical(this,tr("Error"),tr("Backuping error"));
+        else QMessageBox::information(this,tr("Succes"),tr("Backuping succes"));
+    } else {
+        if(!a) systemTray->showMessage(tr("Error"),tr("Backuping error"),QSystemTrayIcon::Critical);
+        else systemTray->showMessage(tr("Succes"),tr("Backuping succes"));
+    }
 
 }
 
@@ -101,5 +133,26 @@ void MainWindow::on_pushButton_clicked()
 {
     for(int i=0; i<ui->backupsList->count(); i++){
         runBackup(ui->backupsList->item(i)->text());
+    }
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    event->ignore();
+    this->hide();
+}
+
+void MainWindow::timeoutBackupEvent()
+{
+    for(int i=0; i<ui->backupsList->count(); i++){
+        QString taskName = ui->backupsList->item(i)->text();
+        QTime taskTime = qSett.value(QString("%1/Time").arg(taskName)).toTime();
+        if(qSett.value(QString("%1/Enabled").arg(taskName)).toBool()){
+            if(taskTime.hour() == QTime::currentTime().hour() && taskTime.minute() == QTime::currentTime().minute()){
+                //QMessageBox::information(this, tr("Info"), tr("Running backup: ")+taskName);
+                systemTray->showMessage(tr("Info"), tr("Running backup: ")+taskName);
+                runBackup(taskName);
+            }
+        }
     }
 }

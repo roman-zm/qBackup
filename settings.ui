@@ -32,7 +32,11 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QLineEdit" name="zipLine"/>
+        <widget class="QLineEdit" name="zipLine">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
        </item>
        <item row="0" column="2">
         <widget class="QPushButton" name="zipGetFolderButton">
