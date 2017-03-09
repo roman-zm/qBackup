@@ -1,13 +1,22 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#ifdef Q_OS_WIN32
+#include "quazip/JlCompress.h"
+#endif
+
+#ifdef Q_OS_LINUX
+#include "quazip5/JlCompress.h"
+#endif
+
+
 #include <QMainWindow>
 #include <QSettings>
 #include <QListWidgetItem>
-#include <quazip5/JlCompress.h>
 #include <QSystemTrayIcon>
 #include <QMenu>
 #include <QTimer>
+#include <QNetworkAccessManager>
 #include "settings.h"
 
 #define ORGANIZATION_NAME "romanzm"
@@ -34,6 +43,14 @@ private slots:
     void timeoutBackupEvent();
     void showOrHide();
     void closeEvent(QCloseEvent *event);
+    void powerOff();
+    void slotTrayMessage(bool succes);
+
+/*
+ *   void slotFinished(QNetworkReply *reply);
+ *   void uploadFile(QString UpUrl);
+ *   void uploadOnYD(QString fileName, QString taskName);
+ */
 
     void on_actionSettings_triggered();
 
@@ -47,7 +64,15 @@ private slots:
 
     void on_pushButton_clicked();
 
+    //    void on_pushButton_2_clicked();
+
+    //    void on_DownloadButt_clicked();
+
+signals:
+    void signalTrayMessage(bool succes);
+
 private:
+    void startBackupInThread(QString taskName);
     Ui::MainWindow *ui;
     QSettings qSett;
     Settings settingWindow;
@@ -56,6 +81,7 @@ private:
     QAction *triggVisible;
     QAction *exitApplication;
     QTimer *timer;
+    QNetworkAccessManager *manager;
 };
 
 #endif // MAINWINDOW_H

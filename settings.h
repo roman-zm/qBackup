@@ -4,6 +4,10 @@
 #include <QDialog>
 #include <QSettings>
 
+#define ORGANIZATION_NAME "romanzm"
+#define ORGANIZATION_DOMAIN "none"
+#define APPLICATION_NAME "QBackup"
+
 namespace Ui {
 class Settings;
 }
@@ -20,6 +24,12 @@ private slots:
     void on_zipGetFolderButton_clicked();
 
     void on_pushButton_clicked();
+
+    void on_autoStartCheckBox_toggled(bool checked);
+
+    void on_pushButton_2_clicked();
+
+    void on_buttonBox_accepted();
 
 private:
     Ui::Settings *ui;

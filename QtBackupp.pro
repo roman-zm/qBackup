@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui concurrent network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -23,17 +23,27 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 
-LIBS += -lquazip5
-
 SOURCES += main.cpp\
         mainwindow.cpp \
     settings.cpp \
     tasksettings.cpp
 
+
 HEADERS  += mainwindow.h \
     settings.h \
-    tasksettings.h
+    tasksettings.h \
+
 
 FORMS    += mainwindow.ui \
     settings.ui \
     tasksettings.ui
+
+win32 {
+    INCLUDEPATH += D:/Qt/quazip/include
+    DEPENDPATH += D:/Qt/quazip/include
+    LIBS += -LD:/Qt/quazip/lib/ -lquazip
+} else {
+    LIBS += -lquazip5
+}
+
+TRANSLATIONS += ru.ts

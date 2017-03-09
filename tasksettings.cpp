@@ -46,7 +46,7 @@ void taskSettings::saveSettings()
 {
     qSett.setValue(QString("%1/DirName").arg(name), ui->dirLineEdit->text());
     qSett.setValue(QString("%1/BackupDirName").arg(name), ui->backDirLineEdit->text());
-    qSett.setValue(QString("%1/Time").arg(name), ui->timeEdit->text());
+    qSett.setValue(QString("%1/Time").arg(name), ui->timeEdit->time());
     qSett.setValue(QString("%1/Enabled").arg(name), ui->enableBackupCheckBox->isChecked());
     qSett.sync();
 }
@@ -58,6 +58,7 @@ void taskSettings::on_applyButton_clicked()
 
 void taskSettings::on_buttonBox_accepted()
 {
+    on_applyButton_clicked();
     this->accept();
 }
 
