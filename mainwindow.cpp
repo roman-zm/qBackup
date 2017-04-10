@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "tasksettings.h"
+#include "ydapi.h"
 
 #ifdef Q_OS_WIN32
 #include "quazip/JlCompress.h"
@@ -55,13 +56,24 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(timer, SIGNAL(timeout()), this, SLOT(powerOff()));
 
     connect(this, SIGNAL(signalTrayMessage(bool)), this, SLOT(slotTrayMessage(bool)));
+    connect(this, SIGNAL(startYDBackupSignal(QString)), this, SLOT());
 
     manager = new QNetworkAccessManager(this);
+
+    api = new YDApi();
+    api->setToken(qSett.value("Token").toString());
+    connect(this, SIGNAL(startYDBackupSignal(QString)), this, SLOT(uploadOnYD(QString)));
+    connect(api, SIGNAL(finished()), this, SLOT(backupFinished()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::backupFinished()
+{
+    systemTray->showMessage(tr("Information"), tr("Uploading complete"));
 }
 
 void MainWindow::on_actionSettings_triggered()
@@ -167,7 +179,19 @@ void MainWindow::startBackupInThread(QString taskName)
                                 qSett.value(QString("%1/DirName").arg(taskName)).toString(),
                                 true,QDir::AllDirs);
 
+    if(a == true){
+        a = QFile(fileName).exists();
+        if(qSett.value(QString("%1/YDEnabled").arg(taskName)).toBool()){
+            emit startYDBackupSignal(fileName);
+        }
+    }
+
     emit signalTrayMessage(a);
+}
+
+void MainWindow::uploadOnYD(QString fileName)
+{
+    api->upload(fileName);
 }
 
 void MainWindow::on_runBackupButton_clicked()

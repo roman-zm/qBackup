@@ -26,12 +26,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp\
         mainwindow.cpp \
     settings.cpp \
-    tasksettings.cpp
+    tasksettings.cpp \
+    ydapi.cpp
 
 
 HEADERS  += mainwindow.h \
     settings.h \
     tasksettings.h \
+    ydapi.h
 
 
 FORMS    += mainwindow.ui \

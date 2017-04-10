@@ -12,7 +12,8 @@ taskSettings::taskSettings(QWidget *parent, QString taskName) :
     ui(new Ui::taskSettings)
 {
     ui->setupUi(this);
-    ui->groupBox->setTitle(taskName);
+//    ui->groupBox->setTitle(taskName);
+    ui->tabWidget->setTabText(0, taskName);
     name = taskName;
     update();
 }
@@ -40,6 +41,7 @@ void taskSettings::update()
     ui->backDirLineEdit->setText(qSett.value(QString("%1/BackupDirName").arg(name)).toString());
     ui->timeEdit->setTime(qSett.value(QString("%1/Time").arg(name)).toTime());
     ui->enableBackupCheckBox->setChecked(qSett.value(QString("%1/Enabled").arg(name)).toBool());
+    ui->YDBackupCheckBox->setChecked(qSett.value(QString("%1/YDEnabled").arg(name)).toBool());
 }
 
 void taskSettings::saveSettings()
@@ -48,6 +50,8 @@ void taskSettings::saveSettings()
     qSett.setValue(QString("%1/BackupDirName").arg(name), ui->backDirLineEdit->text());
     qSett.setValue(QString("%1/Time").arg(name), ui->timeEdit->time());
     qSett.setValue(QString("%1/Enabled").arg(name), ui->enableBackupCheckBox->isChecked());
+
+    qSett.setValue(QString("%1/YDEnabled").arg(name), ui->YDBackupCheckBox->isChecked());
     qSett.sync();
 }
 

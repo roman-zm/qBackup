@@ -17,6 +17,8 @@
 #include <QMenu>
 #include <QTimer>
 #include <QNetworkAccessManager>
+
+#include "ydapi.h"
 #include "settings.h"
 
 #define ORGANIZATION_NAME "romanzm"
@@ -45,7 +47,9 @@ private slots:
     void closeEvent(QCloseEvent *event);
     void powerOff();
     void slotTrayMessage(bool succes);
+    void uploadOnYD(QString fileName);
 
+    void backupFinished();
 /*
  *   void slotFinished(QNetworkReply *reply);
  *   void uploadFile(QString UpUrl);
@@ -70,9 +74,11 @@ private slots:
 
 signals:
     void signalTrayMessage(bool succes);
+    void startYDBackupSignal(QString fileName);
 
 private:
     void startBackupInThread(QString taskName);
+    YDApi *api;
     Ui::MainWindow *ui;
     QSettings qSett;
     Settings settingWindow;
