@@ -18,6 +18,7 @@ Settings::Settings(QWidget *parent) :
     ui->YDcheckBox->setChecked(qSett.value("YDEnabled").toBool());
     ui->powerOffCheckBox->setChecked(qSett.value("PowerOffEnabled").toBool());
     ui->PowerOffTimeEdit->setTime(qSett.value("PowerOffTime").toTime());
+    ui->YDPoweroffCheckBox->setChecked(qSett.value("YDPoweroffCheckBox").toBool());
 }
 
 Settings::~Settings()
@@ -40,6 +41,7 @@ void Settings::on_pushButton_clicked()
     qSett.setValue("zipPath", ui->zipLine->text());
     qSett.setValue("PowerOffEnabled", ui->powerOffCheckBox->isChecked());
     qSett.setValue("PowerOffTime", ui->PowerOffTimeEdit->time());
+    qSett.setValue("YDPoweroffCheckBox", ui->YDPoweroffCheckBox->isChecked());
     qSett.sync();
 }
 

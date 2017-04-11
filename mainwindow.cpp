@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
     trayMenu = new QMenu(this);
     triggVisible = new QAction(tr("Show/Hide"), this);
     exitApplication = new QAction(tr("Exit"), this);
-    connect(triggVisible, SIGNAL(triggered()), this, SLOT(showOrHide()));
+    connect(triggVisible, SIGNAL(triggered()), this, SLOT(toggleVisible()));
     connect(exitApplication, SIGNAL(triggered(bool)), qApp, SLOT(quit()));
     trayMenu->addAction(triggVisible);
     trayMenu->addAction(exitApplication);
@@ -74,6 +74,9 @@ MainWindow::~MainWindow()
 void MainWindow::backupFinished()
 {
     systemTray->showMessage(tr("Information"), tr("Uploading complete"));
+    if(qSett.value("YDPoweroffCheckBox").toBool()){
+        powerOff();
+    }
 }
 
 void MainWindow::on_actionSettings_triggered()
@@ -134,7 +137,7 @@ void MainWindow::on_actionDelete_triggered()
     saveTasks();
 }
 
-void MainWindow::showOrHide()
+void MainWindow::toggleVisible()
 {
     this->setVisible(!this->isVisible());
 }
@@ -253,6 +256,8 @@ void MainWindow::slotTrayMessage(bool succes){
         //if(qSett.value("YDEnabled").toBool()) uploadOnYD(fileName, taskName);
     }
 }
+
+
 
 /***********говнокод********************/
 

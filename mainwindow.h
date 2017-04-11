@@ -41,20 +41,18 @@ private slots:
     void showTaskSettings(QListWidgetItem *item);
     void saveTasks();
     void readTasks();
+
     void runBackup(QString taskName);
     void timeoutBackupEvent();
-    void showOrHide();
-    void closeEvent(QCloseEvent *event);
-    void powerOff();
-    void slotTrayMessage(bool succes);
+    void toggleVisible();
     void uploadOnYD(QString fileName);
 
-    void backupFinished();
-/*
- *   void slotFinished(QNetworkReply *reply);
- *   void uploadFile(QString UpUrl);
- *   void uploadOnYD(QString fileName, QString taskName);
- */
+    void slotTrayMessage(bool succes);      //succes/error message
+    void backupFinished();                  //show message in tray
+
+    void closeEvent(QCloseEvent *event);
+    void powerOff();
+
 
     void on_actionSettings_triggered();
 
@@ -67,10 +65,6 @@ private slots:
     void on_runBackupButton_clicked();
 
     void on_pushButton_clicked();
-
-    //    void on_pushButton_2_clicked();
-
-    //    void on_DownloadButt_clicked();
 
 signals:
     void signalTrayMessage(bool succes);
